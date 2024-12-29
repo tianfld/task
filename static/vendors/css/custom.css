@@ -1,0 +1,21 @@
+/* myapp/static/vendors/css/custom.css */
+.card {
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.card-title {
+    margin-bottom: 0;
+}
+
+.card-body dl {
+    font-size: 0.9em;
+}
+
+.card-footer {
+    text-align: right;
+}

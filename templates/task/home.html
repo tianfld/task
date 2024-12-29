@@ -1,0 +1,43 @@
+<!-- templates/task/home.html -->
+{% extends 'base.html' %}
+{% block title %}首页{% endblock %}
+{% block content %}
+<div class="container mt-5">
+<h1>欢迎来到任务管理系统</h1>
+<div class="row">
+<div class="col-md-4">
+<div class="card mb-3">
+<div class="card-body">
+<h5 class="card-title">新建任务</h5>
+<p class="card-text">创建新任务。</p>
+{% if user.is_authenticated %}
+<a href="{% url 'create_task' %}" class="btn btn-primary">创建任务</a>
+{% endif %}
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card mb-3">
+<div class="card-body">
+<h5 class="card-title">查看任务</h5>
+<p class="card-text">查看所有任务。</p>
+{% if user.is_authenticated %}
+<a href="{% url 'task_list' %}" class="btn btn-primary">查看任务</a>
+{% endif %}
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card mb-3">
+<div class="card-body">
+<h5 class="card-title">待办任务</h5>
+<p class="card-text">待处理的所有任务。</p>
+{% if user.is_authenticated %}
+<a href="{% url 'review_tasks' %}" class="btn btn-primary">待办任务</a>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

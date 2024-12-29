@@ -1,0 +1,66 @@
+<!-- templates/task/create_task.html -->
+{% extends 'base.html' %}
+{% block title %}创建任务{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">创建任务</h1>
+    <form method="post" enctype="multipart/form-data" action="{% url 'create_task' %}" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="id_title" class="form-label">任务标题:</label>
+                <input type="text" class="form-control shadow-sm" id="id_title" name="title" placeholder="请输入任务标题" value="{{ form.title.value|default:'' }}" required>
+                <div class="invalid-feedback">
+                    请填写任务标题。
+                </div>
+            </div>
+        </div>
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="id_deadline" class="form-label">截至日期:</label>
+                <input type="datetime-local" class="form-control shadow-sm" id="id_deadline" name="deadline" value="{{ form.deadline.value|date:'Y-m-d\TH:i' }}" required>
+                <div class="invalid-feedback">
+                    请选择截至日期。
+                </div>
+            </div>
+        </div>
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-12 mb-3">
+                <label for="id_content" class="form-label">任务具体内容:</label>
+                <textarea class="form-control shadow-sm" id="id_content" name="content" rows="3" placeholder="请输入任务具体内容" style="margin-top: 1.25rem; margin-bottom: 1.25rem;">{{ form.content.value|default:'' }}</textarea>
+            </div>
+        </div>
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="id_attachment" class="form-label">附件:</label>
+                <input type="file" class="form-control-file shadow-sm" id="id_attachment" name="attachment">
+            </div>
+        </div>
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="target_user" class="form-label">派发目标用户:</label>
+                <select name="target_user" id="target_user" class="form-select shadow-sm">
+                    {% for user in users %}
+                    <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="reviewer" class="form-label">审核人:</label>
+                <select name="reviewer" id="reviewer" class="form-select shadow-sm">
+                    {% for reviewer in reviewers %}
+                    <option value="{{ reviewer }}">{{ reviewer }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary shadow-sm" style="padding: 0.75rem 2rem;">创建任务</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

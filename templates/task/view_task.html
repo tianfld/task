@@ -1,0 +1,120 @@
+<!-- templates/task/view_task.html -->
+{% extends 'base.html' %}
+
+{% block title %}任务详情 - {{ task.title }}{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>任务详情 - {{ task.title }}</h1>
+        <dl class="row">
+            <dt class="col-sm-3">任务编号:</dt>
+            <dd class="col-sm-9">{{ task.task_id }}</dd>
+            <dt class="col-sm-3">创建时间:</dt>
+            <dd class="col-sm-9">{{ task.created_at|date:"Y-m-d H:i" }}</dd>
+            <dt class="col-sm-3">具体内容:</dt>
+            <dd class="col-sm-9">{{ task.content }}</dd>
+            {% if task.attachment %}
+                <dt class="col-sm-3">附件:</dt>
+                <dd class="col-sm-9">
+                    <a href="{{ task.attachment.url }}" target="_blank">{{ task.attachment.name|truncatechars:20 }}</a>
+                </dd>
+            {% endif %}
+            <dt class="col-sm-3">状态:</dt>
+            <dd class="col-sm-9">{{ task.get_status_display }}</dd>
+            <dt class="col-sm-3">当前处理人:</dt>
+            <dd class="col-sm-9">
+                {% if task.handler %}
+                    {{ task.handler }}
+                {% else %}
+                    暂无处理人
+                {% endif %}
+            </dd>
+        </dl>
+        {% if request.user.username == task.handler %}
+            {% if task.status == 'REVIEWING' %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="approval_status">审核结果：</label>
+                        <select id="approval_status" name="approval_status">
+                            <option value="approved">审核通过</option>
+                            <option value="rejected">审核不通过</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="review_comment">审核意见：</label>
+                        <textarea id="review_comment" name="review_comment" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交审核结果</button>
+                </form>
+            {% elif task.status == 'REJECTED' %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="title">任务标题：</label>
+                        <input type="text" id="title" name="title" value="{{ task.title }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">任务内容：</label>
+                        <textarea id="content" name="content" rows="3">{{ task.content }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="attachment">附件：</label>
+                        <input type="file" id="attachment" name="attachment">
+                    </div>
+                   <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="target_user" class="form-label">派发目标用户:</label>
+                <select name="target_user" id="target_user" class="form-select shadow-sm">
+                    {% for user in users %}
+                    <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row" style="width: 50%; margin: 0 auto;">
+            <div class="col-md-6 mb-3">
+                <label for="reviewer" class="form-label">审核人:</label>
+                <select name="reviewer" id="reviewer" class="form-select shadow-sm">
+                    {% for reviewer in reviewers %}
+                    <option value="{{ reviewer }}">{{ reviewer }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+                    <button type="submit" class="btn btn-primary">重新提交审核</button>
+                </form>
+            {% elif task.status == 'ASSIGNED' or task.status == 'FORWARDED' %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="task_execution_status">任务执行情况：</label>
+                        <textarea id="task_execution_status" name="task_execution_status" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="reply_attachment">答复附件：</label>
+                        <input type="file" id="reply_attachment" name="reply_attachment">
+                    </div>
+                    <button type="submit" name="reply_task" class="btn btn-primary">答复任务</button>
+<div class="col-md-6 mb-3">
+                <label for="new_target_user" class="form-label">转发目标用户:</label>
+                <select name="new_target_user" id="new_target_user" class="form-select shadow-sm">
+                    {% for user in users %}
+                    <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+                    <button type="submit" name="forward_task" class="btn btn-primary">转发任务</button>
+                </form>
+            {% endif %}
+        {% elif task.status == 'COMPLETED' %}
+            <p>任务答复内容：{{ task.task_execution_status }}</p>
+            {% if task.reply_attachment %}
+                <p>
+                    <a href="{{ task.reply_attachment.url }}" target="_blank">下载目标任务答复的附件</a>
+                </p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

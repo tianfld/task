@@ -1,0 +1,30 @@
+<!-- templates/task/manage_reviewers.html -->
+{% extends 'base.html' %}
+
+{% block title %}管理审核员{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>管理审核员</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">用户名</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                        <tr>
+                            <td><input type="checkbox" name="selected_users" value="{{ user.id }}" {% if user.reviewer %}checked{% endif %}></td>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">更新审核员列表</button>
+        </form>
+    </div>
+{% endblock %}
