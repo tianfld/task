@@ -2,4 +2,4 @@
 2、邮件提醒
 3、统一认证
 4、待处理
-git remote add origin https://github.com/tianfld/task
+git remote add origin https://github.com/tianfld/task.git
